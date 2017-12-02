@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public class Program
 {
@@ -28,9 +27,31 @@ public class Program
 		
 		foreach (var row in parsedInput)
 		{
-			var diff = row.Max() - row.Min();
-			Console.WriteLine($"max: {row.Max()} min: {row.Min()} diff: {diff}");
-			checksum += diff;
+			var result = 0;
+			
+			foreach (var first in row)
+			{
+				foreach (var second in row)
+				{
+					if (first == second)
+					{
+						break;
+					}
+					
+					if (first % second == 0)
+					{
+						result = first / second;
+						Console.WriteLine($"{first} / {second} = {result}");
+					}
+					else if (second % first == 0)
+					{
+						result = second / first;
+						Console.WriteLine($"{second} / {first} = {result}");
+					}
+				}
+			}
+			Console.WriteLine($"result: {result}");
+			checksum += result;
 		}
 		
 		Console.WriteLine($"The final checksum is: {checksum}");
