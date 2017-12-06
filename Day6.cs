@@ -15,7 +15,7 @@ public class Program
 		}
 		Console.WriteLine($"{string.Join(" | ", memoryBanks)}");
 		
-		var savedBlockage = new HashSet<string>();
+		var savedBlockage = new List<string>();
 		savedBlockage.Add(string.Join(" ", memoryBanks));
 		var cycles = 0;
 
@@ -46,12 +46,15 @@ public class Program
 
 			//Console.WriteLine($"{string.Join(" | ", memoryBanks)}");
 			
-			if (!savedBlockage.Add(string.Join(" ", memoryBanks)))
+			if (savedBlockage.Contains(string.Join(" ", memoryBanks)))
 			{
 				Console.WriteLine($"Blockage found.");
 				break;
 			}
+			savedBlockage.Add(string.Join(" ", memoryBanks));
 		}
-		Console.WriteLine($"{cycles} cycles until infinite loop.");
+		
+		var indexOfBlockage = savedBlockage.FindIndex((banks) => banks == string.Join(" ", memoryBanks));
+		Console.WriteLine($"{cycles-indexOfBlockage}");
 	}
 }
