@@ -517,7 +517,7 @@ uhbul daccgva xtiz dim uhbul yjmakv yjmakv
 huo esajup ouj oju ujo
 eeeu hwvsk jfkmds okhi pogskfm itdlbll
 lpyubo dylpfb iehwug decj ntidy cuygyg lalkb iutu oxgm imn";
-		
+			
 		var invalidPassphrases = 0;
 		
 		var totalPassphrases = input.Split('\n');
@@ -528,8 +528,12 @@ lpyubo dylpfb iehwug decj ntidy cuygyg lalkb iutu oxgm imn";
 			Console.WriteLine($"Checking '{passphrase}'");
 			foreach	(var word in passphrase.Split(' '))
 			{
-				//Console.WriteLine($"Checking '{word}'");
-				if (!passphrases.Add(word))
+				var wordToSort = new List<char>(word);
+				wordToSort.Sort();
+				var sortedWord = new string(wordToSort.ToArray());
+				//Console.WriteLine($"Checking '{sortedWord}'");
+				
+				if (!passphrases.Add(sortedWord))
 				{
 					Console.WriteLine($"'{word}' is an invalid word in this passphrase.");
 					invalidPassphrases++;
