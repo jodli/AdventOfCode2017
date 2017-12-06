@@ -1025,7 +1025,14 @@ public class Program
 			var intstruction /* Kappa */ = instructionList[instructionPointer];
 			//Console.WriteLine($"Current jump instruction: {intstruction}");
 			
-			instructionList[instructionPointer]++;
+			if (intstruction >= 3)
+			{
+				instructionList[instructionPointer]--;
+			}
+			else
+			{
+				instructionList[instructionPointer]++;
+			}
 			instructionPointer += intstruction;
 			
 			//Console.WriteLine($"Current instruction pointer: {instructionPointer}");
