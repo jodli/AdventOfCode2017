@@ -1,58 +1,133 @@
 using System;
+using System.Collections.Generic;
                     
 public class Program
 {
+    public enum Direction
+    {
+        Up, Down, Left, Right
+    }
+    
     public static void Main()
     {
         var input = 277678;
         
-        var (layerDistance, distanceToCenter) = GetDistanceToLayerAndCenter(input);
-        Console.WriteLine($"Input {input} has distance to center {layerDistance} and to center on layer {distanceToCenter}");
-        Console.WriteLine($"Manhattan Distance: {layerDistance + distanceToCenter}");
-    }
-    
-    public static (int distanceToLayer, int distanceToCenter) GetDistanceToLayerAndCenter(int input)
-    {
-        if (input == 1)
-        {
-            return (0, 0);
-        }
-        
-        var first = 1;
-        var last = 1;
-        
-        var centers = new [] { 0,0,0,1 };
+        var x = 0;
+        var y = 0;
         
         var layer = 0;
-        var minDistance = 0;
+        var direction = Direction.Right;
+        var across = 1;
+        var totalInLayer = 1;
+        var layerStepCount = 1;
         
-        do {
-            layer++;            
-            var across = (layer+1)*2 - 1;
-            
-            var totalInLayer = across*2 + (across-2)*2;
-            
-            first = last + 1;
-            last = first + totalInLayer - 1;
-            
-            var centerOffset = totalInLayer / 4;
-            
-            centers[0] = centers[3] + across - 2;
-            centers[1] = centers[0] + centerOffset;
-            centers[2] = centers[1] + centerOffset;
-            centers[3] = centers[2] + centerOffset;
-            
-            minDistance = across;           
-            foreach (var center in centers)
-            {
-                var distance = Math.Abs(center - input);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                }
+        var squareValues = new Dictionary<(int x, int y), int> { { (0, 0), 1 } };
+        
+        var sum = 0;
+        do
+        {
+            if (layerStepCount == totalInLayer)
+            {       
+                layer++;
+                Console.WriteLine($"Layer: {layer}");       
+                
+                across = (layer+1)*2 - 1;
+                Console.WriteLine($"Across: {across}");
+                
+                totalInLayer = across*2 + (across-2)*2;
+                Console.WriteLine($"TotalInLayer: {totalInLayer}");
+                
+                layerStepCount = 0;
+                direction = Direction.Right;
             }
-        } while (!(input >= first && input <= last));
+            
+            switch (direction)
+            {
+                case Direction.Up:
+                    y += 1;
+                    if (y == Math.Floor(across/2.0))
+                    {
+                        direction = Direction.Left;
+                    }
+                    break;
+                case Direction.Down:
+                    y -= 1;
+                    if (y == -Math.Floor(across/2.0))
+                    {
+                        direction = Direction.Right;
+                    }
+                    break;
+                case Direction.Left:
+                    x -= 1;
+                    if (x == -Math.Floor(across/2.0))
+                    {
+                        direction = Direction.Down;
+                    }
+                    break;
+                case Direction.Right:
+                    x += 1;
+                    if (x == Math.Floor(across/2.0))
+                    {
+                        direction = Direction.Up;
+                    }
+                    break;
+            }
+            layerStepCount++;
+            
+            Console.WriteLine($"Current position: {x}, {y}");
+            Console.WriteLine($"Next move: {direction:G}");
+            
+            Console.WriteLine($"Current step count: {layerStepCount}");
+            
+            sum = 0;
+            var val = 0;
+            if (squareValues.TryGetValue((x-1, y-1), out val))
+            {
+                Console.WriteLine($"Found value at x-1, y-1: {val}");
+                sum += val;
+            }
+            if (squareValues.TryGetValue((x+1, y+1), out val))
+            {
+                Console.WriteLine($"Found value at x+1, y+1: {val}");
+                sum += val;
+            }
+            if (squareValues.TryGetValue((x-1, y), out val))
+            {
+                Console.WriteLine($"Found value at x-1, y: {val}");
+                sum += val;
+            }
+            if (squareValues.TryGetValue((x, y-1), out val))
+            {
+                Console.WriteLine($"Found value at x, y-1: {val}");
+                sum += val;
+            }
+            if (squareValues.TryGetValue((x+1, y), out val))
+            {
+                Console.WriteLine($"Found value at x+1, y: {val}");
+                sum += val;
+            }
+            if (squareValues.TryGetValue((x, y+1), out val))
+            {
+                Console.WriteLine($"Found value at x, y+1: {val}");
+                sum += val;
+            }
+            if (squareValues.TryGetValue((x+1, y-1), out val))
+            {
+                Console.WriteLine($"Found value at x+1, y-1: {val}");
+                sum += val;
+            }
+            if (squareValues.TryGetValue((x-1, y+1), out val))
+            {
+                Console.WriteLine($"Found value at x-1, y+1: {val}");
+                sum += val;
+            }
+            
+            squareValues.Add((x, y), sum);
+            Console.WriteLine($"Sum is: {sum}");
+            
+            Console.WriteLine();
+        } while (sum < input);
         
-        return (layer, minDistance);
+        Console.WriteLine($"Input {input} is smaller than written value: {sum}");
     }
 }
